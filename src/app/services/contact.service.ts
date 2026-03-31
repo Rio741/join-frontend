@@ -10,8 +10,8 @@ import { Contact } from '../models/contact.model';
 export class ContactService {
 
     constructor(private http: HttpClient) { }
-
-    private apiUrl = 'http://127.0.0.1:8000/contacts/';
+    private apiUrl = 'https://api.join.rio-stenger.de/contacts/';
+    // private apiUrl = 'http://127.0.0.1:8000/contacts/';
 
     private getAuthHeaders(): HttpHeaders {
         const user_data = sessionStorage.getItem('user_data');

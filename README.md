@@ -29,7 +29,7 @@ Dies ist das **Frontend** für das **Join Kanbanboard**, entwickelt mit [Angular
 
 1. Repository klonen:
    ```bash
-   git clone https://github.com/Rio741/joinAngular.git
+   git clone https://github.com/Rio741/join-frontend.git
 2. In das Projektverzeichnis wechseln:
    ```bash
    cd join-frontend

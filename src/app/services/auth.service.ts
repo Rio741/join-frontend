@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -10,10 +10,12 @@ import { Observable } from 'rxjs';
 export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) { }
-
-  private apiUrl = 'http://127.0.0.1:8000/api/auth/';
+  private apiUrl = 'https://api.join.rio-stenger.de/api/auth/';
+  // private apiUrl = 'http://127.0.0.1:8000/api/auth/';
 
   private loggedIn: boolean = false;
+
+  userDataChanged = new EventEmitter<void>();
 
   isLoggedIn(): boolean {
     return this.loggedIn;
@@ -73,13 +75,16 @@ export class AuthService {
   }
 
   saveGuestUserData(token: string): void {
-    const userData = {
-      token: token,
-      username: 'Guest',
-      email: 'guest@example.com',
-    };
-    sessionStorage.setItem('user_data', JSON.stringify(userData));
-    this.setLoggedIn(true);
-    this.setToken(token);
-  }
+  const userData = {
+    token: token,
+    username: 'Guest',
+    email: 'guest@example.com',
+  };
+  sessionStorage.setItem('user_data', JSON.stringify(userData));
+  this.setLoggedIn(true);
+  this.setToken(token);
+
+  // 🔹 Event feuern, damit Komponenten wissen, dass UserData verfügbar ist
+  this.userDataChanged.emit();
+}
 }

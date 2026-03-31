@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TaskService } from '../../services/task.service';
 import { CommonModule, NgIf } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-summary',
@@ -12,7 +13,7 @@ import { CommonModule, NgIf } from '@angular/common';
 
 export class SummaryComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute, private taskService: TaskService) { }
+  constructor(private route: ActivatedRoute, private taskService: TaskService, private authService: AuthService) { }
 
   userData: any;
   convertedName: string = '';
@@ -27,24 +28,38 @@ export class SummaryComponent implements OnInit {
   showNameContainer: boolean = false;
 
   ngOnInit(): void {
-    if (window.innerWidth < 1080) {
-      this.route.queryParams.subscribe(params => {
-        if (params['showContainer']) {
-          this.showNameContainer = true;
+  // 1️⃣ Erstmal versuchen, UserData direkt zu laden
+  this.loadUserData();
 
-          setTimeout(() => {
-            this.showNameContainer = false;
-          }, 2000);
-        }
-      });
-    }
-
+  // 2️⃣ Abonnieren, damit Summary reagiert, sobald UserData gesetzt ist
+  this.authService.userDataChanged.subscribe(() => {
     this.loadUserData();
     this.convertUsername();
     this.triggerAnimation();
     this.loadTasks();
     this.setGreeting();
+  });
+
+  // 3️⃣ Wenn UserData schon da, sofort ausführen
+  if (this.userData) {
+    this.convertUsername();
+    this.triggerAnimation();
+    this.loadTasks();
+    this.setGreeting();
   }
+
+  // existing mobile-Logik
+  if (window.innerWidth < 1080) {
+    this.route.queryParams.subscribe(params => {
+      if (params['showContainer']) {
+        this.showNameContainer = true;
+        setTimeout(() => {
+          this.showNameContainer = false;
+        }, 2000);
+      }
+    });
+  }
+}
 
   setGreeting(): void {
     const hours = new Date().getHours();

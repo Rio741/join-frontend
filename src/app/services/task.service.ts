@@ -8,7 +8,8 @@ import { Observable } from 'rxjs';
 })
 
 export class TaskService {
-  private apiUrl = 'http://127.0.0.1:8000/tasks/';
+  private apiUrl = 'https://api.join.rio-stenger.de/tasks/';
+  // private apiUrl = 'http://127.0.0.1:8000/tasks/';
 
   constructor(private http: HttpClient) { }
 
@@ -44,7 +45,7 @@ export class TaskService {
 
   updateSubtaskStatus(subtaskId: number, status: string): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.patch<any>(`http://127.0.0.1:8000/subtasks/${subtaskId}/update_status/`, { status }, { headers });
+    return this.http.patch<any>(`https://api.join.rio-stenger.de/subtasks/${subtaskId}/update_status/`, { status }, { headers });
   }
 
   deleteTask(id: number): Observable<void> {

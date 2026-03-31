@@ -11,30 +11,41 @@ import { CommonModule } from '@angular/common';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-
 export class HeaderComponent implements OnInit {
-
-  constructor(public authService: AuthService) { }
 
   userData: any;
   userInitials: string = '';
   convertedName: string = '';
 
+  constructor(public authService: AuthService) { }
+
   ngOnInit(): void {
+    // 1️⃣ UserData initial laden
     this.loadUserData();
+
+    // 2️⃣ Auf Änderungen der UserData reagieren (Guest-Login oder andere Logins)
+    this.authService.userDataChanged.subscribe(() => {
+      this.loadUserData();
+      this.convertUsername();
+      this.getInitials();
+    });
+
+    // 3️⃣ Wenn UserData schon vorhanden, direkt Initialen setzen
+    if (this.userData) {
+      this.convertUsername();
+      this.getInitials();
+    }
   }
 
   private loadUserData(): void {
     const storedUserData = sessionStorage.getItem('user_data');
     if (storedUserData) {
       this.userData = JSON.parse(storedUserData);
-      this.convertUsername();
-      this.getInitials();
     }
   }
 
   private convertUsername(): void {
-    const username = this.userData.username;
+    const username = this.userData?.username; // sicherstellen, dass userData existiert
     if (username) {
       this.convertedName = username.replace(/_/g, ' ');
     }
